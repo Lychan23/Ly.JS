@@ -76,9 +76,14 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
     if (botProcess) {
-        botProcess.kill();
-        botProcess = null;
-        res.send('Bot stopped');
+        try {
+            botProcess.kill('SIGINT'); // Use SIGINT to try to kill the process more gracefully
+            botProcess = null;
+            res.send('Bot stopped');
+        } catch (error) {
+            console.error('Failed to stop bot process:', error);
+            res.status(500).send('Failed to stop bot process');
+        }
     } else {
         res.send('Bot is not running');
     }
