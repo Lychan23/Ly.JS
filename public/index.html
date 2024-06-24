@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Control Panel</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #58a6ff;
+        }
+
+        /* Button styles */
+        button {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Initial shadow */
+        }
+
+        button:hover {
+            background-color: #30363d;
+            box-shadow: 0 0 20px #58a6ff, 0 0 40px #58a6ff, 0 0 60px #58a6ff; /* Glowing effect */
+        }
+
+        /* Log and stats section */
+        #log, #stats, #input-section {
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+            background-color: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        #log {
+            height: 200px;
+            overflow-y: scroll;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        #stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            text-align: center;
+            flex: 1 1 200px;
+            padding: 10px;
+            margin: 10px;
+            background-color: #21262d;
+            border-radius: 5px;
+            border: 1px solid #21262d;
+        }
+
+        .stat-box h3 {
+            margin: 5px 0;
+            color: #58a6ff;
+        }
+
+        .stat-box p {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        /* Input section */
+        #input-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #input-section input {
+            padding: 12px;
+            font-size: 16px;
+            margin-right: 10px;
+            border: 1px solid #21262d;
+            background-color: #161b22;
+            color: #c9d1d9;
+            border-radius: 5px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        #input-section button {
+            flex: 0 0 auto;
+            padding: 12px 24px;
+        }
+
+        /* Project list section */
+        #project-list {
+            width: 20%; /* Adjust width as needed */
+            min-width: 200px;
+            margin-right: 20px;
+            padding: 20px;
+            background-color: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            text-align: left;
+            position: fixed; /* Fixed position to the left */
+            left: 0;
+            top: 0;
+            height: 100%; /* Full height */
+            overflow-y: auto; /* Enable scrolling if needed */
+        }
+
+        #project-list h2 {
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+
+        #project-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #project-list li {
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: #c9d1d9;
+            transition: color 0.3s ease;
+        }
+
+        #project-list li:hover {
+            color: #58a6ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bot Control Panel</h1>
+    <div id="project-list">
+        <h2>Projects</h2>
+        <ul id="projectList"></ul>
+    </div>
+    <div>
+        <button id="startBtn">Start Bot</button>
+        <button id="stopBtn">Stop Bot</button>
+    </div>
+    <div id="log"></div>
+    <div id="stats">
+        <div class="stat-box">
+            <h3>CPU Load</h3>
+            <p id="cpu">0%</p>
+        </div>
+        <div class="stat-box">
+            <h3>Memory Usage</h3>
+            <p id="memory">0%</p>
+        </div>
+        <div class="stat-box">
+            <h3>Network Inbound</h3>
+            <p id="network-inbound">N/A</p>
+        </div>
+        <div class="stat-box">
+            <h3>Network Outbound</h3>
+            <p id="network-outbound">N/A</p>
+        </div>
+    </div>
+    <div id="input-section">
+        <input type="text" id="discordMessage" placeholder="Enter text to send to Discord">
+        <button id="sendBtn">Send</button>
+    </div>
+
+    <!-- Your socket.io and JavaScript code remains unchanged -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Updated JavaScript section -->
+    <script>
+        const socket = io();
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            fetch('/start', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => console.log(data));
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            fetch('/stop', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => console.log(data));
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const message = document.getElementById('discordMessage').value;
+            fetch('/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: message }),
+            })
+            .then(response => response.text())
+            .then(data => console.log(data));
+        });
+
+        socket.on('log', (data) => {
+            const logDiv = document.getElementById('log');
+            logDiv.textContent += data + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        });
+
+        socket.on('stats', (data) => {
+            document.getElementById('cpu').textContent = `${data.cpu}%`;
+            document.getElementById('memory').textContent = `${data.memory}%`;
+            document.getElementById('network-inbound').textContent = data.networkInbound;
+            document.getElementById('network-outbound').textContent = data.networkOutbound;
+        });
+
+        // Fetch and display projects
+        fetch('/projects')
+            .then(response => response.json())
+            .then(projects => {
+                const projectList = document.getElementById('projectList');
+                projects.forEach(project => {
+                    const li = document.createElement('li');
+                    li.textContent = project;
+                    li.addEventListener('click', () => startProject(project));
+                    projectList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching projects:', error));
+
+        // Function to start a project
+        function startProject(projectName) {
+            fetch('/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ project: projectName }),
+            })
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error starting project:', error));
+        }
+    </script>
+</body>
+</html>
