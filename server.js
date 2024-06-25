@@ -29,7 +29,14 @@ let botProcess = null;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Endpoint to fetch project names
+const activeUsers = new Set();
+
+const server = app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+const io = socketIO(server);
+
 app.get('/projects', async (req, res) => {
     const projectsPath = path.join(__dirname, '..', 'Ly.JS', 'projects'); // Adjust path as per your setup
     try {
@@ -46,6 +53,27 @@ app.get('/projects', async (req, res) => {
     }
 });
 
+app.post('/save-theme', async (req, res) => {
+    try {
+        await fs.writeFile(path.join(__dirname, 'settings.json'), JSON.stringify(req.body, null, 2), 'utf8');
+        io.emit('activity', 'Theme changed');
+        res.send('Theme settings saved');
+    } catch (error) {
+        console.error('Error saving theme settings:', error);
+        res.status(500).send('Error saving theme settings');
+    }
+});
+
+app.get('/load-theme', async (req, res) => {
+    try {
+        const data = await fs.readFile(path.join(__dirname, 'settings.json'), 'utf8');
+        res.json(JSON.parse(data));
+    } catch (error) {
+        console.error('Error loading theme settings:', error);
+        res.status(500).send('Error loading theme settings');
+    }
+});
+
 app.post('/start', (req, res) => {
     if (!botProcess) {
         botProcess = exec('npm start', (error, stdout, stderr) => {
@@ -55,19 +83,20 @@ app.post('/start', (req, res) => {
             if (stderr) {
                 console.error(`stderr: ${stderr}`);
             }
-            console.log(`stdout: ${stdout}`);
         });
 
         botProcess.stdout.on('data', (data) => {
-            console.log(data.toString());
+            // Emit detailed bot logs to the main activity feed
             io.emit('log', data.toString());
         });
 
         botProcess.stderr.on('data', (data) => {
-            console.error(data.toString());
+            // Emit detailed bot logs to the main activity feed
             io.emit('log', data.toString());
         });
 
+        // Emit high-level activity message
+        io.emit('activity', 'Bot started');
         res.send('Bot started');
     } else {
         res.send('Bot is already running');
@@ -79,6 +108,7 @@ app.post('/stop', (req, res) => {
         try {
             botProcess.kill('SIGINT'); // Use SIGINT to try to kill the process more gracefully
             botProcess = null;
+            io.emit('activity', 'Bot stopped');
             res.send('Bot stopped');
         } catch (error) {
             console.error('Failed to stop bot process:', error);
@@ -94,7 +124,10 @@ app.post('/send', (req, res) => {
     const channel = client.channels.cache.get(process.env.CHANNEL_ID);
     if (channel && channel instanceof TextChannel) {
         channel.send(text)
-            .then(() => res.send('Message sent to Discord'))
+            .then(() => {
+                io.emit('activity', 'Text sent to Discord');
+                res.send('Message sent to Discord');
+            })
             .catch(error => res.status(500).send(`Failed to send message: ${error.message}`));
     } else {
         res.status(400).send('Channel not found or is not a text channel');
@@ -104,12 +137,6 @@ app.post('/send', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-const server = app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
-
-const io = socketIO(server);
 
 const getNetworkStats = async () => {
     try {
@@ -126,13 +153,18 @@ const getNetworkStats = async () => {
 setInterval(async () => {
     os.cpuUsage(async (v) => {
         const networkStats = await getNetworkStats();
+        const uptime = process.uptime();
+        const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
+
         const stats = {
             cpu: (v * 100).toFixed(2),
             memory: (os.freememPercentage() * 100).toFixed(2),
             totalMemory: os.totalmem(),
             freeMemory: os.freemem(),
             networkInbound: networkStats.downloadSpeed !== null ? `${networkStats.downloadSpeed.toFixed(2)} Mbps` : 'N/A',
-            networkOutbound: networkStats.uploadSpeed !== null ? `${networkStats.uploadSpeed.toFixed(2)} Mbps` : 'N/A'
+            networkOutbound: networkStats.uploadSpeed !== null ? `${networkStats.uploadSpeed.toFixed(2)} Mbps` : 'N/A',
+            uptime: uptimeFormatted,
+            currentTasks: 'N/A' // Replace with actual task fetching logic
         };
         io.emit('stats', stats);
     });
@@ -140,7 +172,12 @@ setInterval(async () => {
 
 io.on('connection', (socket) => {
     console.log('New client connected');
+    activeUsers.add(socket.id);
+    io.emit('userList', Array.from(activeUsers));
+
     socket.on('disconnect', () => {
         console.log('Client disconnected');
+        activeUsers.delete(socket.id);
+        io.emit('userList', Array.from(activeUsers));
     });
 });

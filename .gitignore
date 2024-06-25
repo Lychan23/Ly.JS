@@ -4,3 +4,5 @@ build
 .vscode
 backup
 projects
+testing
+settings.json
