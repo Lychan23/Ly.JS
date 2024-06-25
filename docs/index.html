@@ -3,10 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Pages Site</title>
+    <title>Ly.JS Project</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        header, .section, footer {
+            padding: 20px;
+            text-align: center;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: slideDown 1s ease-in-out;
+        }
+        header h1 {
+            margin: 0;
+            padding: 20px 0;
+        }
+        header nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        header nav a:hover {
+            background-color: #555;
+        }
+        .section {
+            margin-top: 80px;
+            padding: 60px 20px;
+        }
+        .section:nth-child(even) {
+            background-color: #fff;
+        }
+        .section:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #555;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            animation: slideUp 1s ease-in-out;
+        }
+        footer p {
+            margin: 0;
+            padding: 20px 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, GitHub Pages!</h1>
-    <p>This is a test page for my GitHub Pages site.</p>
+    <header>
+        <h1>Welcome to Ly.JS</h1>
+        <nav>
+            <a href="#intro" class="btn">Introduction</a>
+            <a href="#features" class="btn">Features</a>
+            <a href="#about" class="btn">About</a>
+            <a href="#contact" class="btn">Contact</a>
+        </nav>
+    </header>
+
+    <section id="intro" class="section fade-in">
+        <h2>Introduction</h2>
+        <p>Ly.JS is a clean and efficient JavaScript library designed to simplify your development process. Explore the powerful features and easy-to-use API that Ly.JS offers.</p>
+        <button class="btn" onclick="window.location.href='https://github.com/Lychan23/Ly.JS'">View on GitHub</button>
+    </section>
+
+    <section id="features" class="section fade-in">
+        <h2>Features</h2>
+        <ul>
+            <li>Lightweight and Fast</li>
+            <li>Easy to Integrate</li>
+            <li>Comprehensive Documentation</li>
+            <li>Active Community Support</li>
+        </ul>
+    </section>
+
+    <section id="about" class="section fade-in">
+        <h2>About</h2>
+        <p>Ly.JS is developed by a team of passionate developers who aim to provide a robust and user-friendly JavaScript library. With a focus on performance and simplicity, Ly.JS is perfect for both beginners and experienced developers.</p>
+    </section>
+
+    <section id="contact" class="section fade-in">
+        <h2>Contact Us</h2>
+        <p>Have questions? Feel free to reach out through our GitHub repository or follow us on social media for the latest updates.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Ly.JS Project. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
