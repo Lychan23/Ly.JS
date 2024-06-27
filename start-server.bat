@@ -1,3 +1,3 @@
 @echo off
 echo Starting server...
-node server.js
+npm run svr

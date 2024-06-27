@@ -11,7 +11,7 @@ const fs = require('fs').promises; // Using fs.promises for async file operation
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const client = new Client({
     intents: [
@@ -38,7 +38,7 @@ const server = app.listen(port, () => {
 const io = socketIO(server);
 
 app.get('/projects', async (req, res) => {
-    const projectsPath = path.join(__dirname, '..', 'Ly.JS', 'projects'); // Adjust path as per your setup
+    const projectsPath = path.join(__dirname, 'projects'); // Adjust path as per your setup
     try {
         const files = await fs.readdir(projectsPath);
         const projects = await Promise.all(files.map(async file => {

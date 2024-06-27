@@ -223,6 +223,7 @@
         <div>
             <button id="startBtn">Start Bot</button>
             <button id="stopBtn">Stop Bot</button>
+            <button id="startServerBtn">Start Server</button>
         </div>
         <div id="log"></div>
         <div id="stats">
@@ -279,6 +280,14 @@
                 .then(response => response.text())
                 .then(data => console.log(data));
         });
+
+        document.getElementById('startServerBtn').addEventListener('click', () => {
+            fetch('/api/start-server', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            });
+
 
         document.getElementById('sendBtn').addEventListener('click', () => {
             const message = document.getElementById('discordMessage').value;

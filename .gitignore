@@ -5,4 +5,4 @@ build
 backup
 projects
 testing
-settings.json
+.vercel
