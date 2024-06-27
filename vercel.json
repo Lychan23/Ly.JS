@@ -27,15 +27,6 @@
         "src": "/(.*)",
         "dest": "/public/index.html"
       }
-    ],
-    "env": {
-      "TOKEN": "MTI1MTgyMDU0NjA0MDI2Njc1Mw.G2Bb9C.XI9vEk1U3agTVjHzC2gIPoZUcj8NF_r6Vw4Q0g",
-      "CLIENT_ID": "1251820546040266753",
-      "PREFIX": "!",
-      "MONGO_URI": "mongodb+srv://Lychan23:giKh5tpScAcZblGm@tse.9rjtjro.mongodb.net/?retryWrites=true&w=majority&appName=TSE",
-      "MONGO_DATABASE_NAME": "test",
-      "CHANNEL_ID": "1251824707301408853",
-      "PORT": "3001"
-    }
+    ]
   }
   
