@@ -2,12 +2,12 @@ import { SlashCommandBuilder, CommandInteraction, Collection, PermissionResolvab
 import mongoose from "mongoose"
 
 export interface SlashCommand {
-    command: SlashCommandBuilder,
-    execute: (interaction : ChatInputCommandInteraction) => void,
-    autocomplete?: (interaction: AutocompleteInteraction) => void,
-    modal?: (interaction: ModalSubmitInteraction<CacheType>) => void,
-    cooldown?: number // in seconds
-}
+    command: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | SlashCommandOptionsOnlyBuilder;
+    autocomplete?: (interaction: AutocompleteInteraction) => void;
+    execute: (interaction: ChatInputCommandInteraction) => void;
+    cooldown?: number;
+    modal?: (interaction: ModalSubmitInteraction) => void;  // Add this line
+  }
 
 export interface Command {
     name: string,

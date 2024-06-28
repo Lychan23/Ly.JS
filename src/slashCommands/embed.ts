@@ -1,104 +1,101 @@
-import { SlashCommandBuilder, TextChannel, EmbedBuilder, ColorResolvable } from "discord.js"
+import { SlashCommandBuilder, TextChannel, EmbedBuilder, ColorResolvable, AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 import { SlashCommand } from "../types";
 
 const command: SlashCommand = {
   command: new SlashCommandBuilder()
     .setName("embed")
-    .addStringOption(option => {
-      return option
+    .setDescription("Create a new embed message.")
+    .addStringOption(option => 
+      option
         .setName("title")
         .setDescription("Title of the embed message")
-        .setRequired(true);
-    })
-    .addStringOption(option => {
-      return option
+        .setRequired(true)
+    )
+    .addStringOption(option => 
+      option
         .setName("description")
         .setDescription("Description of the embed message.")
-        .setRequired(true);
-    })
-    .addChannelOption(option => {
-      return option
+        .setRequired(true)
+    )
+    .addChannelOption(option => 
+      option
         .setName("channel")
         .setDescription("Text channel where the embed message will be sent.")
-        .setRequired(true);
-    })
-    .addStringOption(option => {
-      return option
-        .setName("color")
-        .setDescription("Select an option or type an hex color, for example: #000000")
         .setRequired(true)
-        .setAutocomplete(true);
-    })
-    .setDescription("Create a new embed message.")
-  ,
-  autocomplete: async (interaction) => {
+    )
+    .addStringOption(option => 
+      option
+        .setName("color")
+        .setDescription("Select an option or type a hex color, for example: #000000")
+        .setRequired(true)
+        .setAutocomplete(true)
+    ),
+
+  autocomplete: async (interaction: AutocompleteInteraction) => {
     try {
       const focusedValue = interaction.options.getFocused();
       const choices = [
-        { name: "White", value: "White" },
-        { name: "Aqua", value: "Aqua" },
-        { name: "Green", value: "Green" },
-        { name: "Blue", value: "Blue" },
-        { name: "Yellow", value: "Yellow" },
-        { name: "Purple", value: "Purple" },
-        { name: "LuminousVividPink", value: "LuminousVividPink" },
-        { name: "Fuchsia", value: "Fuchsia" },
-        { name: "Gold", value: "Gold" },
-        { name: "Orange", value: "Orange" },
-        { name: "Red", value: "Red" },
-        { name: "Grey", value: "Grey" },
-        { name: "Navy", value: "Navy" },
-        { name: "DarkAqua", value: "DarkAqua" },
-        { name: "DarkGreen", value: "DarkGreen" },
-        { name: "DarkBlue", value: "DarkBlue" },
-        { name: "DarkPurple", value: "DarkPurple" },
-        { name: "DarkVividPink", value: "DarkVividPink" },
-        { name: "DarkGold", value: "DarkGold" },
-        { name: "DarkOrange", value: "DarkOrange" },
-        { name: "DarkRed", value: "DarkRed" },
-        { name: "DarkGrey", value: "DarkGrey" },
-        { name: "DarkerGrey", value: "DarkerGrey" },
-        { name: "LightGrey", value: "LightGrey" },
-        { name: "DarkNavy", value: "DarkNavy" }
+        { name: "White", value: "WHITE" },
+        { name: "Aqua", value: "AQUA" },
+        { name: "Green", value: "GREEN" },
+        { name: "Blue", value: "BLUE" },
+        { name: "Yellow", value: "YELLOW" },
+        { name: "Purple", value: "PURPLE" },
+        { name: "LuminousVividPink", value: "LUMINOUS_VIVID_PINK" },
+        { name: "Fuchsia", value: "FUCHSIA" },
+        { name: "Gold", value: "GOLD" },
+        { name: "Orange", value: "ORANGE" },
+        { name: "Red", value: "RED" },
+        { name: "Grey", value: "GREY" },
+        { name: "Navy", value: "NAVY" },
+        { name: "DarkAqua", value: "DARK_AQUA" },
+        { name: "DarkGreen", value: "DARK_GREEN" },
+        { name: "DarkBlue", value: "DARK_BLUE" },
+        { name: "DarkPurple", value: "DARK_PURPLE" },
+        { name: "DarkVividPink", value: "DARK_VIVID_PINK" },
+        { name: "DarkGold", value: "DARK_GOLD" },
+        { name: "DarkOrange", value: "DARK_ORANGE" },
+        { name: "DarkRed", value: "DARK_RED" },
+        { name: "DarkGrey", value: "DARK_GREY" },
+        { name: "DarkerGrey", value: "DARKER_GREY" },
+        { name: "LightGrey", value: "LIGHT_GREY" },
+        { name: "DarkNavy", value: "DARK_NAVY" }
       ];
-      let filtered: { name: string, value: string }[] = []
-      for (let i = 0; i < choices.length; i++) {
-        const choice = choices[i];
-        if (choice.name.includes(focusedValue)) filtered.push(choice);
-      }
-      await interaction.respond(
-        filtered
-      );
+
+      const filtered = choices.filter(choice => choice.name.toLowerCase().includes(focusedValue.toLowerCase()));
+      await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.value })));
     } catch (error) {
-      console.log(`Error: ${error.message}`)
+      console.error(`Error: ${error.message}`);
     }
   },
-  execute: async (interaction) => {
+
+  execute: async (interaction: ChatInputCommandInteraction) => {
     try {
       await interaction.deferReply({ ephemeral: true });
-      const options: { [key: string]: string | number | boolean } = {};
-      if (!interaction.options) return interaction.editReply({ content: "Something went wrong..." });
-      for (let i = 0; i < interaction.options.data.length; i++) {
-        const element = interaction.options.data[i];
-        if (element.name && element.value) options[element.name] = element.value;
-      }
+
+      const title = interaction.options.getString("title", true);
+      const description = interaction.options.getString("description", true);
+      const channel = interaction.options.getChannel("channel", true) as TextChannel;
+      const color = interaction.options.getString("color", true) as ColorResolvable;
+
       const embed = new EmbedBuilder()
-        .setColor(options.color.toString() as ColorResolvable)
-        .setTitle(options.title.toString())
-        .setDescription(options.description.toString())
+        .setColor(color)
+        .setTitle(title)
+        .setDescription(description)
         .setAuthor({ name: interaction.client.user?.username || 'Default Name', iconURL: interaction.client.user?.avatarURL() || undefined })
         .setThumbnail(interaction.client.user?.avatarURL() || null)
         .setTimestamp()
         .setFooter({ text: "Test embed message", iconURL: interaction.client.user?.avatarURL() || undefined });
-      let selectedTextChannel = interaction.channel?.client.channels.cache.get(options.channel.toString()) as TextChannel
-      selectedTextChannel.send({ embeds: [embed] });
-      return interaction.editReply({ content: "Embed message successfully sent." })
+
+      await channel.send({ embeds: [embed] });
+      await interaction.editReply({ content: "Embed message successfully sent." });
     } catch (error) {
-      interaction.editReply({ content: "Something went wrong..." });
+      console.error(`Error: ${error.message}`);
+      await interaction.editReply({ content: "Something went wrong..." });
     }
-
   },
-  cooldown: 10
-}
 
-export default command
+  cooldown: 10
+};
+
+export default command;
