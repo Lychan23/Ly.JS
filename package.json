@@ -4,12 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "cls && node build/index.js",
-        "build": "cls && node build.js",
+        "start": "next start",
+        "build": "next build",
         "svr": "nodemon server.js",
         "v-dev": "next dev",
-        "v-build": "next build",
-        "v-start": "next start"
+        "v-build": "cls && node build.js",
+        "v-start": "cls && node build/index.js"
     },
     "keywords": [],
     "author": "MericcaN41",
