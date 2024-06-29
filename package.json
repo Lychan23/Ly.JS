@@ -9,7 +9,8 @@
         "svr": "nodemon server.js",
         "v-dev": "next dev",
         "v-build": "cls && node build.js",
-        "v-start": "cls && node build/index.js"
+        "v-start": "cls && node build/index.js",
+        "push": "node push.js"
     },
     "keywords": [],
     "author": "MericcaN41",
