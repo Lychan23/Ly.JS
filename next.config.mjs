@@ -2,9 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
-  experimental: {
-    appDir: true,
-  },
+  basePath: '/app',
 }
 
 export default nextConfig;
