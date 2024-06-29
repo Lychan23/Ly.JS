@@ -5,25 +5,25 @@ const command: SlashCommand = {
   command: new SlashCommandBuilder()
     .setName("embed")
     .setDescription("Create a new embed message.")
-    .addStringOption(option => 
+    .addStringOption(option =>
       option
         .setName("title")
         .setDescription("Title of the embed message")
         .setRequired(true)
     )
-    .addStringOption(option => 
+    .addStringOption(option =>
       option
         .setName("description")
         .setDescription("Description of the embed message.")
         .setRequired(true)
     )
-    .addChannelOption(option => 
+    .addChannelOption(option =>
       option
         .setName("channel")
         .setDescription("Text channel where the embed message will be sent.")
         .setRequired(true)
     )
-    .addStringOption(option => 
+    .addStringOption(option =>
       option
         .setName("color")
         .setDescription("Select an option or type a hex color, for example: #000000")
