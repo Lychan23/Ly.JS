@@ -32,7 +32,7 @@
         "discord.js": "^14.8.0",
         "dotenv": "^16.0.2",
         "express": "^4.19.2",
-        "mongoose": "^6.5.4",
+        "mongoose": "^6.11.3",
         "network-speed": "^2.1.1",
         "next": "^14.2.4",
         "os-utils": "^0.0.14",
