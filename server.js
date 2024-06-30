@@ -1,3 +1,5 @@
+// server.js
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
@@ -5,14 +7,12 @@ const os = require('os-utils');
 const socketIO = require('socket.io');
 const { Client, GatewayIntentBits, TextChannel } = require('discord.js');
 const speedTest = require('speedtest-net');
-const dotenv = require('dotenv');
-const fs = require('fs').promises; // Using fs.promises for async file operations
-
-dotenv.config();
+const fs = require('fs').promises;
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
+// Initialize Discord client with necessary intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -22,7 +22,11 @@ const client = new Client({
     ]
 });
 
-client.login(process.env.TOKEN);
+// Login to Discord with token from environment variables
+client.login(process.env.DISCORD_BOT_TOKEN).catch(error => {
+    console.error('Failed to login to Discord:', error.message);
+    process.exit(1);
+});
 
 let botProcess = null;
 
@@ -37,8 +41,9 @@ const server = app.listen(port, () => {
 
 const io = socketIO(server);
 
+// Endpoint to fetch project directories
 app.get('/projects', async (req, res) => {
-    const projectsPath = path.join(__dirname, 'projects'); // Adjust path as per your setup
+    const projectsPath = path.join(__dirname, 'projects'); 
     try {
         const files = await fs.readdir(projectsPath);
         const projects = await Promise.all(files.map(async file => {
@@ -53,6 +58,7 @@ app.get('/projects', async (req, res) => {
     }
 });
 
+// Endpoint to save theme settings
 app.post('/save-theme', async (req, res) => {
     try {
         await fs.writeFile(path.join(__dirname, 'settings.json'), JSON.stringify(req.body, null, 2), 'utf8');
@@ -64,6 +70,7 @@ app.post('/save-theme', async (req, res) => {
     }
 });
 
+// Endpoint to load theme settings
 app.get('/load-theme', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, 'settings.json'), 'utf8');
@@ -74,9 +81,10 @@ app.get('/load-theme', async (req, res) => {
     }
 });
 
+// Endpoint to start the bot
 app.post('/start', (req, res) => {
     if (!botProcess) {
-        botProcess = exec('npm start', (error, stdout, stderr) => {
+        botProcess = exec('npm run vstart', (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
             }
@@ -86,16 +94,13 @@ app.post('/start', (req, res) => {
         });
 
         botProcess.stdout.on('data', (data) => {
-            // Emit detailed bot logs to the main activity feed
             io.emit('log', data.toString());
         });
 
         botProcess.stderr.on('data', (data) => {
-            // Emit detailed bot logs to the main activity feed
             io.emit('log', data.toString());
         });
 
-        // Emit high-level activity message
         io.emit('activity', 'Bot started');
         res.send('Bot started');
     } else {
@@ -103,10 +108,11 @@ app.post('/start', (req, res) => {
     }
 });
 
+// Endpoint to stop the bot
 app.post('/stop', (req, res) => {
     if (botProcess) {
         try {
-            botProcess.kill('SIGINT'); // Use SIGINT to try to kill the process more gracefully
+            botProcess.kill('SIGINT');
             botProcess = null;
             io.emit('activity', 'Bot stopped');
             res.send('Bot stopped');
@@ -119,6 +125,7 @@ app.post('/stop', (req, res) => {
     }
 });
 
+// Endpoint to send a message to Discord channel
 app.post('/send', (req, res) => {
     const { text } = req.body;
     const channel = client.channels.cache.get(process.env.CHANNEL_ID);
@@ -134,10 +141,12 @@ app.post('/send', (req, res) => {
     }
 });
 
+// Serve the main HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Function to get network stats
 const getNetworkStats = async () => {
     try {
         const result = await speedTest({ acceptLicense: true });
@@ -150,6 +159,7 @@ const getNetworkStats = async () => {
     }
 };
 
+// Emit system stats every 5 minutes
 setInterval(async () => {
     os.cpuUsage(async (v) => {
         const networkStats = await getNetworkStats();
@@ -168,8 +178,9 @@ setInterval(async () => {
         };
         io.emit('stats', stats);
     });
-}, 30000); // Adjusted interval to 5 minutes to avoid excessive speed tests
+}, 300000); // Interval set to 5 minutes
 
+// Handle new client connections and disconnections
 io.on('connection', (socket) => {
     console.log('New client connected');
     activeUsers.add(socket.id);

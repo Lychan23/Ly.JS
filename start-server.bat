@@ -1,3 +1,0 @@
-@echo off
-echo Starting server...
-npm run svr

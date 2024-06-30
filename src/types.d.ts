@@ -37,7 +37,7 @@ export interface BotEvent {
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
-            TOKEN: string,
+            DISCORD_BOT_TOKEN: string,
             CLIENT_ID: string,
             PREFIX: string,
             MONGO_URI: string,
