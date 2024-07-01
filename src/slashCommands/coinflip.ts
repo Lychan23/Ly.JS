@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f4f8a90200a33014ab0b2bb0f37d230c735dc0afee2ef575badd9be4aa3f1e3a
-size 509
+
+import { SlashCommandBuilder } from "discord.js"
+import { SlashCommand } from "../types";
+
+const command: SlashCommand = {
+    command: new SlashCommandBuilder()
+        .setName("coinflip")
+        .setDescription("Flips a coin and returns either Heads or Tails")
+    ,
+    execute: async (interaction) => {
+        const result = Math.random() < 0.5 ? "Heads" : "Tails";
+        await interaction.reply({ content: `🪙 The coin landed on: ${result}` });
+    },
+    cooldown: 5
+}
+
+export default command;
+

@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:869faa76cffc8a882ff95214ee57be39aa735b5c393e3d7fa75c8b4ec3126009
-size 821
+
+import { Client, GatewayIntentBits, Collection, PermissionFlagsBits,} from "discord.js";
+const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits
+const client = new Client({intents:[Guilds, MessageContent, GuildMessages, GuildMembers]})
+import { Command, SlashCommand } from "./types";
+import { config } from "dotenv";
+import { readdirSync } from "fs";
+import { join } from "path";
+config()
+
+client.slashCommands = new Collection<string, SlashCommand>()
+client.commands = new Collection<string, Command>()
+client.cooldowns = new Collection<string, number>()
+
+const handlersDir = join(__dirname, "./handlers")
+readdirSync(handlersDir).forEach(handler => {
+    if (!handler.endsWith(".js")) return;
+    require(`${handlersDir}/${handler}`)(client)
+})
+
+client.login(process.env.DISCORD_BOT_TOKEN)
+

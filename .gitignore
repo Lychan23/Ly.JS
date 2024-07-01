@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:488e2d53349448182846bb7438b072a4c3ef63c66e46c2576dd78f78355bbe08
-size 88
+
+node_modules
+build
+.env
+.vscode
+backup
+projects
+testing
+.vercel
+.next
+start-server.bat

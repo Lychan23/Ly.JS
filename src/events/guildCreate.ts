@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fe7c6625260fc3d514aefa0fb492ddd7b5eb1d2a4921108e0252144c208289e7
-size 398
+
+import { Guild } from "discord.js";
+import GuildModel from "../schemas/Guild";
+import { BotEvent } from "../types";
+
+const event: BotEvent = {
+    name: "guildCreate",
+    execute: (guild : Guild) => {
+        let newGuild = new GuildModel({
+            guildID: guild.id,
+            options: {},
+            joinedAt: Date.now()
+        })
+        newGuild.save()
+    }
+}
+
+export default event;

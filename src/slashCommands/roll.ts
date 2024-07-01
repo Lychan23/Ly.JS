@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:84f7e74307ca8e5c403c3df36aa5c9117eda2a2231944ac5d1a32896990a1db9
-size 513
+
+import { SlashCommandBuilder } from "discord.js"
+import { SlashCommand } from "../types";
+
+const rollCommand: SlashCommand = {
+    command: new SlashCommandBuilder()
+        .setName("roll")
+        .setDescription("Rolls a six-sided die and returns a number between 1 and 6")
+    ,
+    execute: async (interaction) => {
+        const result = Math.floor(Math.random() * 6) + 1;
+        await interaction.reply({ content: `🎲 You rolled a: ${result}` });
+    },
+    cooldown: 5
+}
+
+export default rollCommand;
+

@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:86fd22136b7688ede0f606ad77487c177df385e75bacda748cfbc009c4382c1a
-size 510
+
+import { setGuildOption } from "../functions";
+import { Command } from "../types";
+
+const command: Command = {
+    name: "changePrefix",
+    execute: (message, args) => {
+        let prefix = args[1]
+        if (!prefix) return message.channel.send("No prefix provided")
+        if (!message.guild) return;
+        setGuildOption(message.guild, "prefix", prefix)
+        message.channel.send("Prefix successfully changed!")
+    },
+    permissions: ["Administrator"],
+    aliases: []
+}
+
+export default command

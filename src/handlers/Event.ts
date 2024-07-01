@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c22b5e49fd1df002bf365744b3d545aaf0bc4dc1507ea9ce6059b51e885fa29c
-size 715
+
+import { Client } from "discord.js";
+import { readdirSync } from "fs";
+import { join } from "path";
+import { color } from "../functions";
+import { BotEvent } from "../types";
+
+module.exports = (client: Client) => {
+    let eventsDir = join(__dirname, "../events")
+
+    readdirSync(eventsDir).forEach(file => {
+        if (!file.endsWith(".js")) return;
+        let event: BotEvent = require(`${eventsDir}/${file}`).default
+        event.once ?
+            client.once(event.name, (...args) => event.execute(...args))
+            :
+            client.on(event.name, (...args) => event.execute(...args))
+        console.log(color("text", `🌠 Successfully loaded event ${color("variable", event.name)}`))
+    })
+}
+

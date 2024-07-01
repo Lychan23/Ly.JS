@@ -1,3 +1,52 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b527007b98ddee0859a6ab9ddac906c36ef09b81e6a6d3ec843fadbf078ed437
-size 80
+
+env.EXAMPLE !text !filter !merge !diff
+.gitattributes !text !filter !merge !diff
+.github/dependabot.yml !text !filter !merge !diff
+.github/workflows/npm-publish-github-packages.yml !text !filter !merge !diff
+.github/workflows/static.yml !text !filter !merge !diff
+.gitignore !text !filter !merge !diff
+SECURITY.md !text !filter !merge !diff
+app/favicon.ico !text !filter !merge !diff
+app/globals.css !text !filter !merge !diff
+app/layout.tsx !text !filter !merge !diff
+app/page.tsx !text !filter !merge !diff
+backup.js !text !filter !merge !diff
+build.js !text !filter !merge !diff
+checkPages.js !text !filter !merge !diff
+docs/index.html !text !filter !merge !diff
+main.zip !text !filter !merge !diff
+next-env.d.ts !text !filter !merge !diff
+next.config.mjs !text !filter !merge !diff
+package-lock.json !text !filter !merge !diff
+package.json !text !filter !merge !diff
+postcss.config.mjs !text !filter !merge !diff
+public/favicon.ico !text !filter !merge !diff
+public/index.html !text !filter !merge !diff
+public/next.svg !text !filter !merge !diff
+public/vercel.svg !text !filter !merge !diff
+push.js !text !filter !merge !diff
+server.js !text !filter !merge !diff
+settings.json !text !filter !merge !diff
+src/commands/changePrefix.ts !text !filter !merge !diff
+src/commands/greet.ts !text !filter !merge !diff
+src/events/guildCreate.ts !text !filter !merge !diff
+src/events/interactionCreate.ts !text !filter !merge !diff
+src/events/messageCreate.ts !text !filter !merge !diff
+src/events/ready.ts !text !filter !merge !diff
+src/functions.ts !text !filter !merge !diff
+src/handlers/Command.ts !text !filter !merge !diff
+src/handlers/Event.ts !text !filter !merge !diff
+src/handlers/Mongo.ts !text !filter !merge !diff
+src/index.ts !text !filter !merge !diff
+src/schemas/Guild.ts !text !filter !merge !diff
+src/slashCommands/clear.ts !text !filter !merge !diff
+src/slashCommands/coinflip.ts !text !filter !merge !diff
+src/slashCommands/embed.ts !text !filter !merge !diff
+src/slashCommands/hobby.ts !text !filter !merge !diff
+src/slashCommands/ping.ts !text !filter !merge !diff
+src/slashCommands/rng.ts !text !filter !merge !diff
+src/slashCommands/roll.ts !text !filter !merge !diff
+src/types.d.ts !text !filter !merge !diff
+tailwind.config.ts !text !filter !merge !diff
+tsconfig.json !text !filter !merge !diff
+vercel.json !text !filter !merge !diff
