@@ -16,7 +16,7 @@ To install Ly.JS, you can use npm or include it directly in your project via a C
 
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Lychan23/Ly.JS/main.zip"></script>
+download it from https://cdn.jsdelivr.net/gh/Lychan23/Ly.JS/main.zip"
 ```
 
 ## Features
