@@ -34,7 +34,7 @@
         "clsx": "^2.1.1",
         "discord.js": "^14.8.0",
         "dotenv": "^16.0.2",
-        "express": "^4.19.2",
+        "express": "^4.21.0",
         "express-rate-limit": "^7.3.1",
         "got": "^8.3.2",
         "http-cache-semantics": "^3.8.1",
